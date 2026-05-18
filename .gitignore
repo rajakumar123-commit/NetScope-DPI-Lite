@@ -1,0 +1,32 @@
+# Build artifacts
+build/
+*.o
+*.out
+netscope_dpi
+netscope_dpi.exe
+test_parser
+test_parser.exe
+test_sni
+test_sni.exe
+
+# Logs and Output
+logs/*.log
+output/*.pcap
+!logs/.gitkeep
+!output/.gitkeep
+
+# PCAPs
+pcaps/*.pcap
+!pcaps/test_dpi.pcap
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.sln
+CMakeCache.txt
+CMakeFiles/
+
+# OS generated files
+.DS_Store
+Thumbs.db

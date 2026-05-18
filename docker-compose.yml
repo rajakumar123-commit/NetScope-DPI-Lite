@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  netscope:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: netscope_dpi
+    volumes:
+      - ./pcaps:/app/pcaps
+      - ./output:/app/output
+      - ./logs:/app/logs
+      - ./rules.conf:/app/rules.conf
+    ports:
+      - "9100:9100"
+    networks:
+      - netscope_net
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: netscope_prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=7d'
+    networks:
+      - netscope_net
+    depends_on:
+      - netscope
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: netscope_grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - netscope_net
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+networks:
+  netscope_net:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:

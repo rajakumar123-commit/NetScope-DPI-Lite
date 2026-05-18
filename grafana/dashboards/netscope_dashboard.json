@@ -1,0 +1,121 @@
+{
+  "title": "NetScope DPI Analytics",
+  "uid": "netscope-dpi-lite",
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Total Packets Processed",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(netscope_packets_processed_total)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "fixed", "fixedColor": "green" } }
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        },
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Total Packets Dropped",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(netscope_packets_dropped_total)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "fixed", "fixedColor": "red" } }
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        },
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Active Tracked Flows",
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(netscope_active_flows)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "fixed", "fixedColor": "blue" } }
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        },
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      }
+    },
+    {
+      "type": "gauge",
+      "title": "Drop Rate (%)",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(netscope_packets_dropped_total) / sum(netscope_packets_processed_total) * 100",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { 
+          "min": 0, "max": 100, 
+          "thresholds": { "mode": "absolute", "steps": [ {"color": "green", "value": null}, {"color": "red", "value": 10} ] }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Throughput (Packets/sec)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "targets": [
+        { "expr": "sum(rate(netscope_packets_processed_total[10s]))", "legendFormat": "Processed" },
+        { "expr": "sum(rate(netscope_packets_dropped_total[10s]))", "legendFormat": "Dropped" }
+      ]
+    },
+    {
+      "type": "barchart",
+      "title": "Application Layer Breakdown",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "targets": [{ 
+        "expr": "sum by(app) (netscope_app_packets_total)",
+        "legendFormat": "{{app}}"
+      }],
+      "options": {
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "barWidth": 0.8
+      }
+    }
+  ]
+}
