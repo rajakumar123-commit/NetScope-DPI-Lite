@@ -8,9 +8,9 @@ This project was built to learn how deep packet inspection (DPI) works, how to m
 
 ## 📊 Dashboard Preview
 
-*(To add your Grafana screenshot here: create an `assets` folder, save your screenshot as `grafana.png`, and remove the HTML comment tags below!)*
-
-<!-- <img src="assets/grafana.png" width="800"/> -->
+<p align="center">
+  <img src="assets/grafana.png" width="800"/>
+</p>
 
 ---
 
